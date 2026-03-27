@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zen Throwback — Dynamic Presentation Engine</title>
+
+  <!-- Zen discovery protocol: extensions/tools can find available themes -->
+  <link rel="zen-manifest" href="/themes/manifest.json">
+  <meta name="zen:tokens" content="v1">
+
+  <!-- Zen design token contract + base layout -->
+  <link rel="stylesheet" href="/themes/tokens.css">
+
+  <!-- Page-specific styles (build against zen tokens) -->
+  <style>
+    .hero {
+      text-align: center;
+      padding: var(--zen-space-3xl) 0;
+      margin-bottom: var(--zen-space-2xl);
+    }
+
+    .hero .eyebrow {
+      font-size: var(--zen-font-size-sm);
+      text-transform: uppercase;
+      letter-spacing: var(--zen-letter-spacing-caps);
+      color: var(--zen-color-accent);
+      margin-bottom: var(--zen-space-sm);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      margin: 0 0 var(--zen-space-md);
+      line-height: var(--zen-line-height-tight);
+    }
+
+    .hero .subtitle {
+      font-size: var(--zen-font-size-lg);
+      color: var(--zen-color-muted);
+      max-width: 50ch;
+      margin-inline: auto;
+    }
+
+    .tier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--zen-space-md);
+      margin: var(--zen-space-xl) 0;
+    }
+
+    .tier-card {
+      background: var(--zen-color-surface);
+      border: var(--zen-border-width) var(--zen-border-style) var(--zen-color-border);
+      border-radius: var(--zen-radius);
+      padding: var(--zen-space-md);
+      transition: border-color var(--zen-transition);
+    }
+    .tier-card:hover { border-color: var(--zen-color-accent); }
+
+    .tier-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-family: var(--zen-font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 2px 6px;
+      border-radius: var(--zen-radius-sm);
+      background: var(--zen-color-accent);
+      color: var(--zen-color-bg);
+      margin-bottom: var(--zen-space-sm);
+    }
+
+    .tier-card h3 {
+      font-size: var(--zen-font-size-base);
+      margin: 0 0 var(--zen-space-xs);
+    }
+
+    .tier-card p {
+      font-size: var(--zen-font-size-sm);
+      color: var(--zen-color-muted);
+      margin: 0;
+    }
+
+    .quick-switch {
+      display: flex;
+      gap: var(--zen-space-sm);
+      flex-wrap: wrap;
+      margin: var(--zen-space-lg) 0;
+    }
+
+    .quick-btn {
+      padding: var(--zen-space-xs) var(--zen-space-md);
+      border: var(--zen-border-width) var(--zen-border-style) var(--zen-color-border);
+      border-radius: var(--zen-radius-full);
+      background: var(--zen-color-surface);
+      color: var(--zen-color-text);
+      cursor: pointer;
+      font-family: var(--zen-font-body);
+      font-size: var(--zen-font-size-sm);
+      transition: all var(--zen-transition);
+    }
+    .quick-btn:hover {
+      border-color: var(--zen-color-accent);
+      color: var(--zen-color-accent);
+    }
+    .quick-btn.active {
+      background: var(--zen-color-accent);
+      border-color: var(--zen-color-accent);
+      color: var(--zen-color-bg);
+    }
+
+    .seed-controls {
+      display: flex;
+      gap: var(--zen-space-sm);
+      align-items: center;
+      margin: var(--zen-space-md) 0;
+    }
+
+    .seed-input {
+      flex: 1;
+      padding: var(--zen-space-xs) var(--zen-space-sm);
+      border: var(--zen-border-width) var(--zen-border-style) var(--zen-color-border);
+      border-radius: var(--zen-radius);
+      background: var(--zen-color-surface);
+      color: var(--zen-color-text);
+      font-family: var(--zen-font-mono);
+      font-size: var(--zen-font-size-sm);
+      max-width: 220px;
+    }
+
+    .seed-btn {
+      padding: var(--zen-space-xs) var(--zen-space-md);
+      background: var(--zen-color-accent);
+      color: var(--zen-color-bg);
+      border: none;
+      border-radius: var(--zen-radius);
+      cursor: pointer;
+      font-family: var(--zen-font-body);
+      font-size: var(--zen-font-size-sm);
+      transition: opacity var(--zen-transition);
+    }
+    .seed-btn:hover { opacity: 0.85; }
+
+    .status-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--zen-color-surface);
+      border-top: 1px solid var(--zen-color-border);
+      padding: var(--zen-space-xs) var(--zen-space-lg);
+      font-size: var(--zen-font-size-sm);
+      color: var(--zen-color-muted);
+      font-family: var(--zen-font-mono);
+      display: flex;
+      gap: var(--zen-space-lg);
+      align-items: center;
+      z-index: 9990;
+    }
+    .status-bar span { display: flex; gap: 0.4em; align-items: center; }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--zen-color-accent);
+    }
+
+    .code-block {
+      background: var(--zen-color-surface);
+      border: 1px solid var(--zen-color-border);
+      border-radius: var(--zen-radius);
+      padding: var(--zen-space-lg);
+      font-family: var(--zen-font-mono);
+      font-size: var(--zen-font-size-sm);
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.6;
+      margin: var(--zen-space-md) 0;
+      color: var(--zen-color-text);
+    }
+
+    .kw  { color: var(--zen-color-accent); }
+    .str { color: color-mix(in srgb, var(--zen-color-accent) 70%, var(--zen-color-text)); }
+    .cm  { color: var(--zen-color-muted); font-style: italic; }
+
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: var(--zen-space-md);
+      margin: var(--zen-space-3xl) 0 var(--zen-space-xl);
+    }
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--zen-color-border);
+    }
+    .section-divider span {
+      font-size: var(--zen-font-size-sm);
+      color: var(--zen-color-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="zen-content">
+
+    <div class="hero">
+      <p class="eyebrow">CSS Zen Garden — Evolved</p>
+      <h1>Zen Throwback</h1>
+      <p class="subtitle">
+        A portable, dynamic presentation-layer engine. The same content,
+        rendered in radically different ways — chosen by the visitor.
+      </p>
+    </div>
+
+    <!-- Quick theme switcher buttons -->
+    <div class="quick-switch" id="quick-switch" role="group" aria-label="Quick theme switcher">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="section-divider"><span>What is this?</span></div>
+
+    <p>
+      In 2003, the <strong>CSS Zen Garden</strong> demonstrated that a single HTML document
+      could look radically different depending solely on its stylesheet. It was a landmark
+      moment — but the experience was static. You'd load a new URL to see a new theme.
+    </p>
+    <p>
+      <strong>Zen Throwback</strong> picks up that thread and pulls it into the present.
+      Themes switch instantly, without navigation. Your preference persists across sessions.
+      Share a link with <code>?zen=terminal</code> and friends see the same view.
+      And if enough sites adopt the <a href="#spec">discovery protocol</a>, a browser
+      extension could apply your preferred aesthetic everywhere.
+    </p>
+
+    <div class="tier-grid">
+      <div class="tier-card">
+        <span class="tier-badge">Level 1</span>
+        <h3>Token</h3>
+        <p>Override ~20 CSS custom properties. Instant, zero flash, works on any site that builds against the token contract.</p>
+      </div>
+      <div class="tier-card">
+        <span class="tier-badge">Level 2</span>
+        <h3>Layer</h3>
+        <p>Inject a full stylesheet via CSS <code>@layer</code>. CSS Zen Garden–style total control, without <code>!important</code> hacks.</p>
+      </div>
+      <div class="tier-card">
+        <span class="tier-badge">Level 3</span>
+        <h3>Component</h3>
+        <p>Swap Web Component registrations to change structure, not just style. Requires deferred element registration.</p>
+      </div>
+      <div class="tier-card">
+        <span class="tier-badge">Level 4</span>
+        <h3>Generative</h3>
+        <p>A JS function produces CSS from a seed. Same seed = same theme, anywhere. True random-every-load capability.</p>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>Generative themes</span></div>
+
+    <p>
+      The <strong>Generative</strong> theme produces a unique palette, type stack, and layout from a
+      short seed string. The same seed always produces the same result — so seeds are shareable.
+    </p>
+
+    <div class="seed-controls">
+      <input class="seed-input" type="text" id="seed-input" placeholder="Enter a seed..." value="">
+      <button class="seed-btn" id="seed-apply">Apply seed</button>
+      <button class="seed-btn" id="seed-random" style="background: var(--zen-color-surface); color: var(--zen-color-text); border: 1px solid var(--zen-color-border);">Random seed</button>
+    </div>
+    <p style="font-size: var(--zen-font-size-sm); color: var(--zen-color-muted);">
+      Current seed: <code id="active-seed">—</code>
+    </p>
+
+    <div class="section-divider" id="spec"><span>Adoption protocol</span></div>
+
+    <p>
+      Any site can opt into the Zen ecosystem with two lines in <code>&lt;head&gt;</code>:
+    </p>
+
+    <div class="code-block"><span class="cm">&lt;!-- 1. Declare the manifest (makes themes discoverable) --&gt;</span>
+<span class="kw">&lt;link</span> <span class="str">rel</span>="zen-manifest" <span class="str">href</span>="/zen-manifest.json"<span class="kw">&gt;</span>
+
+<span class="cm">&lt;!-- 2. Declare token version (signals CSS var contract) --&gt;</span>
+<span class="kw">&lt;meta</span> <span class="str">name</span>="zen:tokens" <span class="str">content</span>="v1"<span class="kw">&gt;</span></div>
+
+    <p>
+      Then load the engine and optionally drop in the switcher UI:
+    </p>
+
+    <div class="code-block"><span class="cm">// ES module usage</span>
+<span class="kw">import</span> Zen <span class="kw">from</span> <span class="str">'/src/zen.js'</span>;
+<span class="kw">import</span> <span class="str">'/src/zen-switcher.js'</span>;
+
+<span class="kw">const</span> zen = <span class="kw">new</span> Zen();
+<span class="kw">await</span> zen.init();            <span class="cm">// loads manifest, applies initial theme</span>
+window.zen = zen;            <span class="cm">// expose for zen-switcher and console</span>
+
+<span class="cm">// API</span>
+zen.apply(<span class="str">'terminal'</span>);     <span class="cm">// switch to a theme</span>
+zen.random();                <span class="cm">// pick a random theme</span>
+zen.next();                  <span class="cm">// cycle through themes</span>
+zen.reset();                 <span class="cm">// restore default + clear storage</span>
+
+<span class="cm">// Events</span>
+zen.addEventListener(<span class="str">'zen:change'</span>, e => console.log(e.detail.theme));
+zen.addEventListener(<span class="str">'zen:ready'</span>,  e => console.log(e.detail.manifest));</div>
+
+    <div class="code-block"><span class="cm">&lt;!-- Drop-in UI widget --&gt;</span>
+<span class="kw">&lt;zen-switcher</span> <span class="str">position</span>="bottom-right"<span class="kw">&gt;&lt;/zen-switcher&gt;</span></div>
+
+    <div class="section-divider"><span>The token contract</span></div>
+
+    <p>
+      Themes and sites communicate through a standard set of CSS custom properties.
+      Site authors write CSS against these variables; themes override them.
+      A token-only theme needs no knowledge of your site's markup.
+    </p>
+
+    <div class="code-block"><span class="cm">/* In your site's CSS — build against the contract */</span>
+.card {
+  background: <span class="kw">var</span>(<span class="str">--zen-color-surface</span>);
+  border: <span class="kw">var</span>(<span class="str">--zen-border-width</span>) <span class="kw">var</span>(<span class="str">--zen-border-style</span>) <span class="kw">var</span>(<span class="str">--zen-color-border</span>);
+  border-radius: <span class="kw">var</span>(<span class="str">--zen-radius</span>);
+  font-family: <span class="kw">var</span>(<span class="str">--zen-font-body</span>);
+  transition: border-color <span class="kw">var</span>(<span class="str">--zen-transition</span>);
+}
+
+<span class="cm">/* In a token theme — just override the vars */</span>
+:root {
+  --zen-color-bg:     #0d1117;
+  --zen-color-text:   #39ff14;
+  --zen-font-body:    ui-monospace, monospace;
+}</div>
+
+    <blockquote>
+      The interesting open question is whether this becomes a W3C proposal or stays
+      a community convention — like <code>rel="canonical"</code> or OpenGraph tags.
+      The barrier to adoption is intentionally low.
+    </blockquote>
+
+    <div class="section-divider"><span>Future directions</span></div>
+
+    <p>Some directions this could grow:</p>
+
+    <ul>
+      <li><strong>Browser extension</strong> — reads <code>rel="zen-manifest"</code>, applies user's global preference to every site that supports it</li>
+      <li><strong>Theme registry</strong> — a CDN-hosted index of community themes, shareable by URL</li>
+      <li><strong>CSS Houdini (Paint API)</strong> — procedural backgrounds and textures once Firefox/Safari ship it</li>
+      <li><strong>OS-level signal</strong> — respond to <code>prefers-color-scheme</code>, <code>prefers-contrast</code>, <code>prefers-reduced-motion</code> as first-class theme parameters</li>
+      <li><strong>Per-origin storage</strong> — browser extension persists theme preference per-domain</li>
+      <li><strong>Theme composition</strong> — combine a layout theme + a colour theme + a type theme independently</li>
+    </ul>
+
+  </main>
+
+  <!-- Zen switcher widget (positions itself) -->
+  <div class="status-bar">
+    <span><span class="status-dot"></span> <span id="status-theme">Loading...</span></span>
+    <span>tier: <code id="status-tier">—</code></span>
+    <span style="margin-left: auto; opacity: 0.5">zen v0.1 · <a href="https://github.com/kristoffersingleton/zen_throwback" style="color: inherit">GitHub</a></span>
+  </div>
+
+  <script type="module">
+    import Zen from '/src/zen.js';
+    import '/src/zen-switcher.js';
+
+    const zen = new Zen({ manifest: '/themes/manifest.json' });
+
+    // Register listeners BEFORE init() so zen:ready fires into them
+    zen.addEventListener('zen:ready',  () => {
+      populateQuickSwitch();
+      updateUI(zen.active?.id);
+    });
+    zen.addEventListener('zen:change', e => updateUI(e.detail.theme.id));
+
+    await zen.init();
+    window.zen = zen; // expose for <zen-switcher> auto-discovery and console use
+
+    // ── Quick-switch buttons ────────────────────────────────────────────────
+    function populateQuickSwitch() {
+      const qs = document.getElementById('quick-switch');
+      qs.innerHTML = '';
+      for (const theme of zen.themes) {
+        const btn = document.createElement('button');
+        btn.className = 'quick-btn';
+        btn.textContent = theme.name;
+        btn.dataset.themeId = theme.id;
+        btn.addEventListener('click', () => zen.apply(theme.id));
+        qs.appendChild(btn);
+      }
+    }
+
+    // ── Status bar + seed display ───────────────────────────────────────────
+    function updateUI(themeId) {
+      const qs = document.getElementById('quick-switch');
+      const theme = zen.themes.find(t => t.id === themeId);
+      qs.querySelectorAll('.quick-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.themeId === themeId);
+      });
+      document.getElementById('status-theme').textContent = theme?.name ?? themeId ?? '—';
+      document.getElementById('status-tier').textContent  = theme?.tier  ?? '—';
+
+      if (theme?.id === 'random-seed') {
+        const seed = document.documentElement.dataset.zenSeed ?? '—';
+        document.getElementById('active-seed').textContent = seed;
+        document.getElementById('seed-input').value = seed;
+      } else {
+        document.getElementById('active-seed').textContent = '—';
+      }
+    }
+
+    // ── Seed controls ───────────────────────────────────────────────────────
+    document.getElementById('seed-apply').addEventListener('click', async () => {
+      const seed = document.getElementById('seed-input').value.trim();
+      if (!seed) return;
+      const genTheme = zen.themes.find(t => t.id === 'random-seed');
+      if (genTheme) genTheme.seed = seed;
+      await zen.apply('random-seed');
+    });
+
+    document.getElementById('seed-random').addEventListener('click', async () => {
+      const seed = Math.random().toString(36).slice(2, 10);
+      document.getElementById('seed-input').value = seed;
+      const genTheme = zen.themes.find(t => t.id === 'random-seed');
+      if (genTheme) genTheme.seed = seed;
+      await zen.apply('random-seed');
+    });
+
+    // ── Switcher widget ─────────────────────────────────────────────────────
+    const sw = document.createElement('zen-switcher');
+    sw.setAttribute('position', 'bottom-right');
+    document.body.appendChild(sw);
+    // zen-switcher auto-discovers window.zen in connectedCallback;
+    // no explicit wiring needed since window.zen is set above before appendChild
+  </script>
+
+</body>
+</html>

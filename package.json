@@ -1,0 +1,12 @@
+{
+  "name": "zen-throwback",
+  "version": "0.1.0",
+  "description": "Dynamic presentation-layer engine — CSS Zen Garden evolved",
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes serve . --listen 3900 --no-clipboard",
+    "lint": "npx --yes eslint src/"
+  },
+  "keywords": ["css", "theming", "design-tokens", "presentation-layer", "css-zen-garden"],
+  "license": "MIT"
+}

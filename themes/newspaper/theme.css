@@ -1,0 +1,135 @@
+/**
+ * Broadsheet Theme — Level 2 (Layer)
+ * Multi-column newspaper layout with classic broadsheet typography.
+ * Uses CSS Columns for natural reflow and newspaper-style headers.
+ */
+
+body {
+  padding: var(--zen-space-md);
+  background-image:
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 100% calc(var(--zen-font-size-base) * var(--zen-line-height));
+}
+
+/* Masthead */
+body > header,
+.zen-header {
+  text-align: center;
+  border-top: 6px double var(--zen-color-text);
+  border-bottom: 6px double var(--zen-color-text);
+  padding: var(--zen-space-md) 0;
+  margin-bottom: var(--zen-space-lg);
+}
+
+h1 {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-family: var(--zen-font-heading);
+  font-weight: var(--zen-font-weight-black);
+  text-transform: none;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin: 0;
+}
+
+/* Dateline style under h1 */
+h1 + p,
+.zen-dateline {
+  font-size: var(--zen-font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--zen-color-muted);
+  border-top: 1px solid var(--zen-color-border);
+  border-bottom: 1px solid var(--zen-color-border);
+  padding: var(--zen-space-xs) 0;
+  margin: var(--zen-space-sm) 0;
+}
+
+/* Newspaper column layout for main content */
+main,
+.zen-content,
+article {
+  max-width: none;
+  columns: 2 40ch;
+  column-gap: var(--zen-space-2xl);
+  column-rule: 1px solid var(--zen-color-border);
+}
+
+h2 {
+  column-span: all;
+  font-size: var(--zen-font-size-3xl);
+  border-top: 3px solid var(--zen-color-text);
+  border-bottom: 1px solid var(--zen-color-border);
+  padding: var(--zen-space-xs) 0;
+  margin: var(--zen-space-xl) 0 var(--zen-space-md);
+  font-weight: var(--zen-font-weight-black);
+}
+
+h3 {
+  font-size: var(--zen-font-size-xl);
+  border-bottom: 2px solid var(--zen-color-accent);
+  padding-bottom: var(--zen-space-xs);
+}
+
+/* Drop cap on first paragraph after h2 */
+h2 + p::first-letter,
+article > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--zen-font-heading);
+  font-size: 4.5em;
+  line-height: 0.8;
+  margin: 0.05em 0.08em 0 0;
+  color: var(--zen-color-accent);
+  font-weight: var(--zen-font-weight-black);
+}
+
+blockquote {
+  font-size: var(--zen-font-size-xl);
+  font-style: italic;
+  border: none;
+  border-top: 2px solid var(--zen-color-accent);
+  border-bottom: 2px solid var(--zen-color-accent);
+  padding: var(--zen-space-md) 0;
+  margin: var(--zen-space-xl) 0;
+  text-align: center;
+  color: var(--zen-color-text);
+  column-span: all;
+}
+
+a {
+  color: var(--zen-color-accent);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+hr {
+  column-span: all;
+  border: none;
+  border-top: 1px solid var(--zen-color-border);
+  margin: var(--zen-space-lg) 0;
+}
+
+pre, code {
+  font-family: var(--zen-font-mono);
+  background: var(--zen-color-surface);
+  border: 1px solid var(--zen-color-border);
+}
+
+img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: var(--zen-space-sm);
+  filter: grayscale(0.2);
+}
+
+figcaption, .caption {
+  font-size: var(--zen-font-size-sm);
+  color: var(--zen-color-muted);
+  font-style: italic;
+  text-align: center;
+  margin-top: var(--zen-space-xs);
+}
+
+@media (max-width: 600px) {
+  main, .zen-content, article { columns: 1; }
+}

@@ -1,0 +1,106 @@
+/**
+ * Terminal Theme — Level 2 (Layer)
+ * Full CSS overrides via @layer zen.theme
+ * Token values already injected by the engine; this adds structural flair.
+ */
+
+/* CRT scanline effect on body */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 20, 0.03) 2px,
+    rgba(0, 255, 20, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* Subtle phosphor glow on text */
+body {
+  text-shadow: 0 0 8px color-mix(in srgb, var(--zen-color-text) 60%, transparent);
+}
+
+h1, h2, h3, h4 {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 20px var(--zen-color-text);
+}
+
+h1::before { content: '█ '; opacity: 0.4; }
+h2::before { content: '▶ '; opacity: 0.4; font-size: 0.7em; }
+
+/* Blinking cursor on h1 */
+h1::after {
+  content: '▌';
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+  opacity: 0.8;
+}
+@keyframes blink {
+  0%, 100% { opacity: 0.8; }
+  50%       { opacity: 0; }
+}
+
+a {
+  color: var(--zen-color-accent);
+  text-decoration: none;
+  border-bottom: 1px dashed currentColor;
+}
+a:hover {
+  color: var(--zen-color-text);
+  text-shadow: 0 0 12px var(--zen-color-text);
+}
+a::before { content: '['; }
+a::after  { content: ']'; }
+
+pre, code {
+  border-color: var(--zen-color-text);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--zen-color-text) 20%, transparent);
+}
+
+pre {
+  border-left: 3px solid var(--zen-color-text);
+  border-right: none;
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+  padding-left: var(--zen-space-lg);
+}
+
+pre::before {
+  content: '$ ';
+  opacity: 0.5;
+}
+
+blockquote {
+  border-left-color: var(--zen-color-muted);
+  font-style: normal;
+}
+blockquote::before {
+  content: '> ';
+  color: var(--zen-color-muted);
+}
+
+hr {
+  border-color: var(--zen-color-muted);
+  border-style: dashed;
+}
+hr::after {
+  content: ' EOF ';
+  display: block;
+  text-align: center;
+  color: var(--zen-color-muted);
+  font-family: var(--zen-font-mono);
+  font-size: 0.75em;
+  margin-top: -0.9em;
+  background: var(--zen-color-bg);
+  width: fit-content;
+  margin-inline: auto;
+  padding: 0 0.5em;
+  letter-spacing: 0.2em;
+}

@@ -1,0 +1,102 @@
+/**
+ * Brutalist Theme — Level 2 (Layer)
+ * Raw structure, visible construction, deliberate ugliness-as-aesthetic.
+ */
+
+* {
+  border-radius: 0 !important;
+  transition: none !important;
+}
+
+body {
+  border: 6px solid var(--zen-color-text);
+  margin: 12px;
+  padding: var(--zen-space-xl);
+  outline: 2px solid var(--zen-color-accent);
+  outline-offset: 6px;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  line-height: 0.9;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  border-top: 8px solid var(--zen-color-text);
+  border-bottom: 8px solid var(--zen-color-text);
+  padding: var(--zen-space-sm) 0;
+  margin-bottom: var(--zen-space-xl);
+  word-break: break-all;
+}
+
+h2 {
+  text-transform: uppercase;
+  background: var(--zen-color-text);
+  color: var(--zen-color-bg);
+  padding: var(--zen-space-xs) var(--zen-space-sm);
+  display: inline-block;
+  font-size: var(--zen-font-size-2xl);
+  letter-spacing: 0.05em;
+}
+
+h3 {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 4px solid var(--zen-color-accent);
+}
+
+a {
+  color: var(--zen-color-accent);
+  font-weight: var(--zen-font-weight-black);
+  text-decoration: none;
+  background: var(--zen-color-text);
+  color: var(--zen-color-bg);
+  padding: 0 0.2em;
+}
+a:hover {
+  background: var(--zen-color-accent);
+  color: var(--zen-color-bg);
+}
+
+p {
+  border-left: none;
+  margin-bottom: var(--zen-space-lg);
+}
+
+blockquote {
+  border: 4px solid var(--zen-color-text);
+  border-left: 16px solid var(--zen-color-accent);
+  padding: var(--zen-space-md);
+  font-style: normal;
+  font-weight: var(--zen-font-weight-bold);
+  background: var(--zen-color-surface);
+}
+
+pre {
+  border: 4px solid var(--zen-color-text);
+  background: var(--zen-color-text);
+  color: var(--zen-color-bg);
+}
+
+code {
+  background: var(--zen-color-text);
+  color: var(--zen-color-bg);
+  border: none;
+  font-weight: bold;
+}
+
+hr {
+  border: none;
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--zen-color-text) 0,
+    var(--zen-color-text) 20px,
+    var(--zen-color-accent) 20px,
+    var(--zen-color-accent) 40px
+  );
+}
+
+img {
+  filter: grayscale(1) contrast(1.3);
+  border: 4px solid var(--zen-color-text);
+}

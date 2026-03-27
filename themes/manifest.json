@@ -1,0 +1,157 @@
+{
+  "$schema": "./manifest.schema.json",
+  "version": "1",
+  "default": "default",
+  "themes": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Clean, readable baseline using system fonts and neutral colours.",
+      "tier": "token",
+      "swatch": { "bg": "#ffffff", "accent": "#0070f3" },
+      "tokens": {
+        "--zen-color-bg":       "#ffffff",
+        "--zen-color-surface":  "#f5f5f5",
+        "--zen-color-text":     "#111111",
+        "--zen-color-muted":    "#666666",
+        "--zen-color-accent":   "#0070f3",
+        "--zen-color-border":   "#e0e0e0",
+        "--zen-font-body":      "system-ui, -apple-system, sans-serif",
+        "--zen-font-heading":   "inherit",
+        "--zen-font-mono":      "ui-monospace, monospace",
+        "--zen-font-size-base": "1rem",
+        "--zen-line-height":    "1.6",
+        "--zen-max-width":      "68ch",
+        "--zen-space-unit":     "1rem",
+        "--zen-radius":         "6px",
+        "--zen-transition":     "150ms ease"
+      }
+    },
+    {
+      "id": "terminal",
+      "name": "Terminal",
+      "description": "Green-on-black CRT aesthetic with monospace everything.",
+      "tier": "layer",
+      "swatch": { "bg": "#0d1117", "accent": "#39ff14" },
+      "stylesheet": "/themes/terminal/theme.css",
+      "tokens": {
+        "--zen-color-bg":       "#0d1117",
+        "--zen-color-surface":  "#161b22",
+        "--zen-color-text":     "#39ff14",
+        "--zen-color-muted":    "#2ea043",
+        "--zen-color-accent":   "#58a6ff",
+        "--zen-color-border":   "#30363d",
+        "--zen-font-body":      "ui-monospace, 'Cascadia Code', 'Fira Code', monospace",
+        "--zen-font-heading":   "inherit",
+        "--zen-font-mono":      "inherit",
+        "--zen-font-size-base": "0.95rem",
+        "--zen-line-height":    "1.7",
+        "--zen-max-width":      "80ch",
+        "--zen-radius":         "2px",
+        "--zen-transition":     "0ms"
+      }
+    },
+    {
+      "id": "brutalist",
+      "name": "Brutalist",
+      "description": "Raw, structural, unapologetically stark. Borders everywhere.",
+      "tier": "layer",
+      "swatch": { "bg": "#f5f0e8", "accent": "#ff2d00" },
+      "stylesheet": "/themes/brutalist/theme.css",
+      "tokens": {
+        "--zen-color-bg":       "#f5f0e8",
+        "--zen-color-surface":  "#fffdf5",
+        "--zen-color-text":     "#0a0a0a",
+        "--zen-color-muted":    "#444444",
+        "--zen-color-accent":   "#ff2d00",
+        "--zen-color-border":   "#0a0a0a",
+        "--zen-font-body":      "'Arial Black', 'Helvetica Neue', sans-serif",
+        "--zen-font-heading":   "'Arial Black', Impact, sans-serif",
+        "--zen-font-mono":      "'Courier New', monospace",
+        "--zen-font-size-base": "1.05rem",
+        "--zen-line-height":    "1.4",
+        "--zen-max-width":      "72ch",
+        "--zen-radius":         "0px",
+        "--zen-transition":     "0ms"
+      }
+    },
+    {
+      "id": "newspaper",
+      "name": "Broadsheet",
+      "description": "Multi-column newspaper layout with serif typography.",
+      "tier": "layer",
+      "swatch": { "bg": "#fdfaf3", "accent": "#8b0000" },
+      "stylesheet": "/themes/newspaper/theme.css",
+      "tokens": {
+        "--zen-color-bg":       "#fdfaf3",
+        "--zen-color-surface":  "#f5f0e0",
+        "--zen-color-text":     "#1a1a1a",
+        "--zen-color-muted":    "#555555",
+        "--zen-color-accent":   "#8b0000",
+        "--zen-color-border":   "#cccccc",
+        "--zen-font-body":      "Georgia, 'Times New Roman', serif",
+        "--zen-font-heading":   "'Playfair Display', 'Times New Roman', serif",
+        "--zen-font-mono":      "'Courier New', monospace",
+        "--zen-font-size-base": "1rem",
+        "--zen-line-height":    "1.7",
+        "--zen-max-width":      "none",
+        "--zen-radius":         "0px",
+        "--zen-transition":     "200ms ease"
+      }
+    },
+    {
+      "id": "zen-garden",
+      "name": "Zen Garden",
+      "description": "Homage to the original CSS Zen Garden. Calm, centered, typographic.",
+      "tier": "token",
+      "swatch": { "bg": "#f0ebe0", "accent": "#5c7a4e" },
+      "tokens": {
+        "--zen-color-bg":       "#f0ebe0",
+        "--zen-color-surface":  "#e8e0d0",
+        "--zen-color-text":     "#2c2416",
+        "--zen-color-muted":    "#6b5f4e",
+        "--zen-color-accent":   "#5c7a4e",
+        "--zen-color-border":   "#c8b898",
+        "--zen-font-body":      "Georgia, Cambria, serif",
+        "--zen-font-heading":   "'Palatino Linotype', Palatino, serif",
+        "--zen-font-mono":      "'Courier New', monospace",
+        "--zen-font-size-base": "1.05rem",
+        "--zen-line-height":    "1.75",
+        "--zen-max-width":      "62ch",
+        "--zen-radius":         "4px",
+        "--zen-transition":     "300ms ease"
+      }
+    },
+    {
+      "id": "neon-noir",
+      "name": "Neon Noir",
+      "description": "Dark cyberpunk. Deep blacks, electric highlights, dramatic shadows.",
+      "tier": "token",
+      "swatch": { "bg": "#0a0010", "accent": "#ff00aa" },
+      "tokens": {
+        "--zen-color-bg":       "#0a0010",
+        "--zen-color-surface":  "#120020",
+        "--zen-color-text":     "#e8d4ff",
+        "--zen-color-muted":    "#9060cc",
+        "--zen-color-accent":   "#ff00aa",
+        "--zen-color-border":   "#3a1060",
+        "--zen-font-body":      "'Segoe UI', Tahoma, sans-serif",
+        "--zen-font-heading":   "'Segoe UI', Tahoma, sans-serif",
+        "--zen-font-mono":      "'Cascadia Code', 'Fira Code', monospace",
+        "--zen-font-size-base": "1rem",
+        "--zen-line-height":    "1.6",
+        "--zen-max-width":      "68ch",
+        "--zen-radius":         "4px",
+        "--zen-transition":     "200ms ease"
+      }
+    },
+    {
+      "id": "random-seed",
+      "name": "Generative",
+      "description": "Procedurally generated palette. Different every page load.",
+      "tier": "generative",
+      "swatch": "#888",
+      "generator": "/themes/generative/generator.js"
+    }
+  ]
+}

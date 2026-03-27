@@ -1,0 +1,262 @@
+/**
+ * Zen Design Token Contract
+ *
+ * This file defines the *interface* that themes implement.
+ * Site authors: build your CSS against these variables.
+ * Theme authors: override these variables to theme the site.
+ *
+ * Token tiers:
+ *   1. Colour    — semantic palette (not raw values)
+ *   2. Typography — font stacks, size scale, leading
+ *   3. Space     — layout rhythm
+ *   4. Shape     — radius, border style
+ *   5. Motion    — transition timing
+ *   6. Layout    — structural constraints
+ */
+
+/**
+ * Typed token registration via CSS @property (Chrome 85+, Firefox 120+, Safari 16.4+).
+ *
+ * Benefits:
+ *   1. Invalid values fail loudly instead of silently inheriting garbage
+ *   2. Browser can interpolate colour/length tokens in transitions/animations
+ *      (without @property, custom properties are treated as strings — no tweening)
+ *   3. Tokens have explicit initial values — no undefined fallback chains
+ *
+ * The @property rules are outside @layer because they are not cascade-layered;
+ * they are property registrations at the browser level.
+ */
+
+/* Colour tokens — registered as <color> so transitions animate */
+@property --zen-color-bg       { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --zen-color-surface  { syntax: "<color>"; inherits: true; initial-value: #f5f5f5; }
+@property --zen-color-text     { syntax: "<color>"; inherits: true; initial-value: #111111; }
+@property --zen-color-muted    { syntax: "<color>"; inherits: true; initial-value: #666666; }
+@property --zen-color-accent   { syntax: "<color>"; inherits: true; initial-value: #0070f3; }
+@property --zen-color-border   { syntax: "<color>"; inherits: true; initial-value: #e0e0e0; }
+
+/* Length tokens — registered as <length> so transitions animate */
+@property --zen-font-size-base { syntax: "<length>"; inherits: true; initial-value: 1rem; }
+@property --zen-space-unit     { syntax: "<length>"; inherits: true; initial-value: 1rem; }
+@property --zen-radius         { syntax: "<length>"; inherits: true; initial-value: 6px; }
+@property --zen-max-width      { syntax: "*";        inherits: true; initial-value: 68ch; }
+
+/* Number tokens */
+@property --zen-line-height    { syntax: "<number>"; inherits: true; initial-value: 1.6; }
+
+@layer base {
+  :root {
+    /* ── Colour ───────────────────────────────────────────────── */
+    --zen-color-bg:       #ffffff;   /* page background */
+    --zen-color-surface:  #f5f5f5;   /* cards, sidebars, code blocks */
+    --zen-color-text:     #111111;   /* primary body text */
+    --zen-color-muted:    #666666;   /* secondary / caption text */
+    --zen-color-accent:   #0070f3;   /* links, highlights, CTAs */
+    --zen-color-border:   #e0e0e0;   /* dividers, outlines */
+
+    /* Derived semantic aliases — themes may override these too */
+    --zen-color-link:         var(--zen-color-accent);
+    --zen-color-link-visited: color-mix(in srgb, var(--zen-color-accent) 60%, var(--zen-color-text));
+    --zen-color-focus:        var(--zen-color-accent);
+    --zen-color-code-bg:      var(--zen-color-surface);
+    --zen-color-selection-bg: color-mix(in srgb, var(--zen-color-accent) 25%, transparent);
+
+    /* ── Typography ───────────────────────────────────────────── */
+    --zen-font-body:      system-ui, -apple-system, sans-serif;
+    --zen-font-heading:   inherit;
+    --zen-font-mono:      ui-monospace, monospace;
+
+    --zen-font-size-base: 1rem;       /* 16px default */
+    --zen-font-size-sm:   0.875rem;
+    --zen-font-size-lg:   1.125rem;
+    --zen-font-size-xl:   1.25rem;
+    --zen-font-size-2xl:  1.5rem;
+    --zen-font-size-3xl:  2rem;
+    --zen-font-size-4xl:  2.5rem;
+
+    --zen-font-weight-normal: 400;
+    --zen-font-weight-medium: 500;
+    --zen-font-weight-bold:   700;
+    --zen-font-weight-black:  900;
+
+    --zen-line-height:         1.6;
+    --zen-line-height-tight:   1.25;
+    --zen-line-height-loose:   2;
+
+    --zen-letter-spacing:      0;
+    --zen-letter-spacing-wide: 0.05em;
+    --zen-letter-spacing-caps: 0.1em;
+
+    /* ── Space ────────────────────────────────────────────────── */
+    --zen-space-unit:  1rem;
+    --zen-space-xs:    calc(var(--zen-space-unit) * 0.25);
+    --zen-space-sm:    calc(var(--zen-space-unit) * 0.5);
+    --zen-space-md:    var(--zen-space-unit);
+    --zen-space-lg:    calc(var(--zen-space-unit) * 1.5);
+    --zen-space-xl:    calc(var(--zen-space-unit) * 2);
+    --zen-space-2xl:   calc(var(--zen-space-unit) * 3);
+    --zen-space-3xl:   calc(var(--zen-space-unit) * 4);
+
+    /* ── Shape ────────────────────────────────────────────────── */
+    --zen-radius:      6px;
+    --zen-radius-sm:   calc(var(--zen-radius) * 0.5);
+    --zen-radius-lg:   calc(var(--zen-radius) * 2);
+    --zen-radius-full: 9999px;
+
+    --zen-border-width: 1px;
+    --zen-border-style: solid;
+
+    /* ── Motion ───────────────────────────────────────────────── */
+    --zen-transition:        150ms ease;
+    --zen-transition-slow:   400ms ease;
+    --zen-transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* ── Layout ───────────────────────────────────────────────── */
+    --zen-max-width:        68ch;   /* prose column width */
+    --zen-max-width-wide:   90ch;   /* wide content */
+    --zen-max-width-full:   100%;
+    --zen-padding-x:        var(--zen-space-lg);
+    --zen-padding-y:        var(--zen-space-xl);
+  }
+
+  /* Honour prefers-reduced-motion at the token level */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --zen-transition:        0ms;
+      --zen-transition-slow:   0ms;
+      --zen-transition-spring: 0ms;
+    }
+  }
+}
+
+/**
+ * Base layout using token variables.
+ * Sites can use this as a starting point or write their own.
+ * Wrap in @layer base so themes in @layer zen.theme override cleanly.
+ */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: var(--zen-font-size-base);
+    background: var(--zen-color-bg);
+    color: var(--zen-color-text);
+    font-family: var(--zen-font-body);
+    line-height: var(--zen-line-height);
+    -webkit-font-smoothing: antialiased;
+    color-scheme: light dark;
+  }
+
+  body {
+    margin: 0;
+    padding: var(--zen-padding-y) var(--zen-padding-x);
+    transition:
+      background var(--zen-transition),
+      color var(--zen-transition);
+  }
+
+  /* Prose container */
+  .zen-content,
+  main,
+  article {
+    max-width: var(--zen-max-width);
+    margin-inline: auto;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--zen-font-heading);
+    font-weight: var(--zen-font-weight-bold);
+    line-height: var(--zen-line-height-tight);
+    color: var(--zen-color-text);
+  }
+
+  h1 { font-size: var(--zen-font-size-4xl); }
+  h2 { font-size: var(--zen-font-size-3xl); }
+  h3 { font-size: var(--zen-font-size-2xl); }
+  h4 { font-size: var(--zen-font-size-xl); }
+
+  p { margin: 0 0 var(--zen-space-md); }
+
+  a {
+    color: var(--zen-color-link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: color var(--zen-transition);
+  }
+  a:visited { color: var(--zen-color-link-visited); }
+  a:focus-visible {
+    outline: 2px solid var(--zen-color-focus);
+    outline-offset: 2px;
+    border-radius: var(--zen-radius-sm);
+  }
+
+  code, kbd, samp {
+    font-family: var(--zen-font-mono);
+    font-size: 0.9em;
+    background: var(--zen-color-code-bg);
+    padding: 0.1em 0.3em;
+    border-radius: var(--zen-radius-sm);
+    border: var(--zen-border-width) var(--zen-border-style) var(--zen-color-border);
+  }
+
+  pre {
+    background: var(--zen-color-code-bg);
+    border: var(--zen-border-width) var(--zen-border-style) var(--zen-color-border);
+    border-radius: var(--zen-radius);
+    padding: var(--zen-space-md);
+    overflow-x: auto;
+    font-family: var(--zen-font-mono);
+    font-size: var(--zen-font-size-sm);
+    line-height: 1.5;
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  hr {
+    border: none;
+    border-top: var(--zen-border-width) var(--zen-border-style) var(--zen-color-border);
+    margin: var(--zen-space-2xl) 0;
+  }
+
+  blockquote {
+    margin: var(--zen-space-lg) 0;
+    padding: var(--zen-space-sm) var(--zen-space-lg);
+    border-left: 4px solid var(--zen-color-accent);
+    color: var(--zen-color-muted);
+    font-style: italic;
+  }
+
+  ::selection {
+    background: var(--zen-color-selection-bg);
+  }
+
+  /* View Transitions — smooth theme switching (Chrome/Edge 111+, progressive enhancement) */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.3s;
+    animation-timing-function: ease;
+  }
+  ::view-transition-old(root) {
+    animation-name: zen-fade-out;
+  }
+  ::view-transition-new(root) {
+    animation-name: zen-fade-in;
+  }
+  @keyframes zen-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+  @keyframes zen-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+}

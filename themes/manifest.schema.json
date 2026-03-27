@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "zen-manifest/v1",
+  "title": "Zen Theme Manifest",
+  "description": "Describes the themes available for a Zen-enabled site.",
+  "type": "object",
+  "required": ["version", "themes"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Manifest format version",
+      "enum": ["1"]
+    },
+    "default": {
+      "type": "string",
+      "description": "ID of the default theme. Falls back to first theme if omitted."
+    },
+    "themes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/Theme" }
+    }
+  },
+  "definitions": {
+    "Theme": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Unique slug. Used in URL params and localStorage."
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable display name."
+        },
+        "description": {
+          "type": "string",
+          "description": "Short description for UI tooltips."
+        },
+        "tier": {
+          "type": "string",
+          "enum": ["token", "layer", "component", "generative"],
+          "default": "token",
+          "description": "Theming level. Higher tiers are more powerful but need more setup."
+        },
+        "swatch": {
+          "description": "Visual preview in the switcher UI.",
+          "oneOf": [
+            { "type": "string", "description": "Any CSS colour value." },
+            {
+              "type": "object",
+              "required": ["bg", "accent"],
+              "properties": {
+                "bg":     { "type": "string" },
+                "accent": { "type": "string" }
+              }
+            }
+          ]
+        },
+        "tokens": {
+          "type": "object",
+          "description": "CSS custom property overrides (Level 1). Keys must start with '--' or will be prefixed with '--zen-'.",
+          "additionalProperties": { "type": "string" }
+        },
+        "stylesheet": {
+          "type": "string",
+          "description": "URL to a CSS file injected into @layer zen.theme (Level 2)."
+        },
+        "components": {
+          "type": "object",
+          "description": "Map of custom element tag names to JS module URLs (Level 3).",
+          "additionalProperties": { "type": "string" }
+        },
+        "generator": {
+          "type": "string",
+          "description": "URL to a JS module exporting generate(seed): string (Level 4)."
+        },
+        "seed": {
+          "type": "string",
+          "description": "Default seed for generative themes. If omitted, a random seed is used each load."
+        }
+      }
+    }
+  }
+}
