@@ -4,10 +4,8 @@
 
 Inspired by [CSS Zen Garden](https://www.csszengarden.com/) (2003), which showed that a single HTML document could look radically different depending solely on its stylesheet. Zen Throwback picks up that thread: themes switch instantly, preferences persist across sessions, and shareable links let you send friends your view of a site. If enough sites adopt the [discovery protocol](#adoption), a browser extension could apply your preferred aesthetic everywhere.
 
-Runtime CSS theme-switching for any website. Zero dependencies, framework agnostic.                                                                                                                                 
-  Drop in two lines of HTML, build against CSS custom properties, and visitors can   
-  restyle your page instantly — including procedurally generated themes from a seed string.  
-
+Runtime CSS theme-switching for any website. Zero dependencies, framework agnostic.
+Drop in two lines of HTML, build against CSS custom properties, and visitors can restyle your page instantly — including procedurally generated themes from a seed string.  
 ---
 
 ## Quick demo
