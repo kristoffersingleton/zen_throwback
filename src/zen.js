@@ -20,6 +20,7 @@ const ZEN_EVENT_PREFIX = 'zen:';
 
 export class Zen extends EventTarget {
   #manifest = null;
+  #manifestUrl = null;
   #activeTheme = null;
   #styleEl = null;
   #tokenEl = null;
@@ -56,6 +57,7 @@ export class Zen extends EventTarget {
     const manifestUrl = this.#options.manifest ?? this.#discoverManifest();
     if (!manifestUrl) throw new Error('[Zen] No manifest found. Provide options.manifest or add <link rel="zen-manifest">.');
 
+    this.#manifestUrl = manifestUrl;
     this.#manifest = await this.#fetchManifest(manifestUrl);
     this.#ensureLayer();
 
@@ -153,7 +155,8 @@ export class Zen extends EventTarget {
 
     // Level 2: Layer stylesheet (full CSS injection)
     if (theme.stylesheet) {
-      await this.#applyStylesheet(theme.stylesheet, theme);
+      const stylesheetUrl = new URL(theme.stylesheet, this.#manifestUrl).href;
+      await this.#applyStylesheet(stylesheetUrl, theme);
     } else if (theme.tokens && !theme.stylesheet) {
       // Token-only theme: clear any previous layer stylesheet
       this.#clearStylesheet();
@@ -166,7 +169,8 @@ export class Zen extends EventTarget {
 
     // Level 4: Generative (JS module that exports a generate(seed) function)
     if (theme.generator) {
-      await this.#applyGenerator(theme.generator, theme.seed);
+      const generatorUrl = new URL(theme.generator, this.#manifestUrl).href;
+      await this.#applyGenerator(generatorUrl, theme.seed);
     }
 
     // Set data attribute so authors can write [data-zen-theme="terminal"] selectors

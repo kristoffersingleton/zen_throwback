@@ -59,7 +59,7 @@
       "description": "Green-on-black CRT aesthetic with monospace everything.",
       "tier": "layer",
       "swatch": { "bg": "#0d1117", "accent": "#39ff14" },
-      "stylesheet": "/themes/terminal/theme.css",
+      "stylesheet": "./terminal/theme.css",
       "tokens": {
         "--zen-color-bg":       "#0d1117",
         "--zen-color-surface":  "#161b22",
@@ -83,7 +83,7 @@
       "description": "Raw, structural, unapologetically stark. Borders everywhere.",
       "tier": "layer",
       "swatch": { "bg": "#f5f0e8", "accent": "#ff2d00" },
-      "stylesheet": "/themes/brutalist/theme.css",
+      "stylesheet": "./brutalist/theme.css",
       "tokens": {
         "--zen-color-bg":       "#f5f0e8",
         "--zen-color-surface":  "#fffdf5",
@@ -107,7 +107,7 @@
       "description": "Multi-column newspaper layout with serif typography.",
       "tier": "layer",
       "swatch": { "bg": "#fdfaf3", "accent": "#8b0000" },
-      "stylesheet": "/themes/newspaper/theme.css",
+      "stylesheet": "./newspaper/theme.css",
       "tokens": {
         "--zen-color-bg":       "#fdfaf3",
         "--zen-color-surface":  "#f5f0e0",
@@ -177,7 +177,7 @@
       "description": "Procedurally generated palette. Different every page load.",
       "tier": "generative",
       "swatch": "#888",
-      "generator": "/themes/generative/generator.js"
+      "generator": "./generative/generator.js"
     }
   ]
 }
