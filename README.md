@@ -255,6 +255,42 @@ See [`themes/generative/generator.js`](themes/generative/generator.js) for the f
 
 ---
 
+## Dark mode
+
+Zen has two layers of dark mode support that work together:
+
+### CSS-only auto-dark (zero JS)
+
+`tokens.css` includes a `@media (prefers-color-scheme: dark)` block inside `@layer base`. Any site that includes `tokens.css` and builds against `--zen-*` variables gets automatic dark mode with no JavaScript at all. The override only applies when no explicit theme has been chosen (`[data-zen-theme]` is not set).
+
+### Engine-driven variant switching
+
+Themes can declare a `darkVariant` (and `lightVariant`) in the manifest pointing to their dark/light counterpart:
+
+```json
+{
+  "id": "default",
+  "darkVariant": "default-dark",
+  "tokens": { "..." }
+},
+{
+  "id": "default-dark",
+  "lightVariant": "default",
+  "tokens": { "--zen-color-bg": "#111111", "..." }
+}
+```
+
+When `systemColorScheme: true` (the default), the engine:
+- Applies the `darkVariant` automatically on load if the OS is in dark mode and no explicit preference is stored
+- Watches for OS changes at runtime and switches instantly
+- Never overwrites an explicit user choice (URL param or localStorage takes precedence)
+
+To opt out:
+
+```js
+const zen = new Zen({ systemColorScheme: false });
+```
+
 ## Token reference
 
 The full contract is defined in [`themes/tokens.css`](themes/tokens.css). Key tokens:

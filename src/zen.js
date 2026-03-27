@@ -27,11 +27,12 @@ export class Zen extends EventTarget {
 
   /**
    * @param {object} options
-   * @param {string} [options.manifest]      URL to zen-manifest.json (auto-discovered if omitted)
-   * @param {boolean} [options.persist=true] Save preference to localStorage
-   * @param {boolean} [options.urlParam=true] Read/write ?zen= URL param
-   * @param {boolean} [options.transitions=true] Use View Transitions API when available
-   * @param {string} [options.root=':root']  CSS selector for token injection
+   * @param {string} [options.manifest]             URL to zen-manifest.json (auto-discovered if omitted)
+   * @param {boolean} [options.persist=true]        Save preference to localStorage
+   * @param {boolean} [options.urlParam=true]       Read/write ?zen= URL param
+   * @param {boolean} [options.transitions=true]    Use View Transitions API when available
+   * @param {boolean} [options.systemColorScheme=true] Auto-apply darkVariant when OS is in dark mode
+   * @param {string} [options.root=':root']         CSS selector for token injection
    */
   constructor(options = {}) {
     super();
@@ -39,6 +40,7 @@ export class Zen extends EventTarget {
       persist: true,
       urlParam: true,
       transitions: true,
+      systemColorScheme: true,
       root: ':root',
       ...options,
     };
@@ -60,6 +62,8 @@ export class Zen extends EventTarget {
     const initial = this.#resolveInitialTheme();
     if (initial) await this.apply(initial, { silent: false });
 
+    if (this.#options.systemColorScheme) this.#watchColorScheme();
+
     this.#emit('ready', { manifest: this.#manifest });
     return this;
   }
@@ -79,8 +83,8 @@ export class Zen extends EventTarget {
     const run = async () => {
       await this.#applyTheme(theme);
       this.#activeTheme = theme;
-      if (this.#options.persist) this.#persist(themeId);
-      if (this.#options.urlParam) this.#updateUrlParam(themeId);
+      if (this.#options.persist && !opts._systemDriven) this.#persist(themeId);
+      if (this.#options.urlParam && !opts._systemDriven) this.#updateUrlParam(themeId);
       if (!opts.silent) this.#emit('change', { theme });
     };
 
@@ -228,6 +232,40 @@ export class Zen extends EventTarget {
     document.documentElement.dataset.zenSeed = resolvedSeed;
   }
 
+  // ─── Internal: system color scheme ────────────────────────────────────────
+
+  /**
+   * Watch prefers-color-scheme and auto-switch to darkVariant / lightVariant
+   * when the OS setting changes — but only when the user hasn't made an
+   * explicit theme choice (URL param or localStorage takes precedence).
+   */
+  #watchColorScheme() {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e) => {
+      // Don't override an explicit user choice
+      if (this.#options.urlParam && new URL(location.href).searchParams.get('zen')) return;
+      if (this.#options.persist && localStorage.getItem(ZEN_STORAGE_KEY)) return;
+      this.#applyColorSchemeVariant(e.matches);
+    };
+    mq.addEventListener('change', handler);
+    // Also apply on init if no explicit preference is stored
+    const hasExplicit =
+      (this.#options.urlParam && new URL(location.href).searchParams.get('zen')) ||
+      (this.#options.persist  && localStorage.getItem(ZEN_STORAGE_KEY));
+    if (!hasExplicit) this.#applyColorSchemeVariant(mq.matches);
+  }
+
+  #applyColorSchemeVariant(prefersDark) {
+    const current = this.#activeTheme;
+    if (!current) return;
+    const variantId = prefersDark ? current.darkVariant : current.lightVariant;
+    if (variantId && this.#getTheme(variantId)) {
+      // Apply silently — this is an automatic OS-driven switch, not a user action.
+      // We persist=false and urlParam=false so it doesn't overwrite the user's stored choice.
+      this.apply(variantId, { silent: false, _systemDriven: true });
+    }
+  }
+
   // ─── Internal: layer setup ─────────────────────────────────────────────────
 
   /**
@@ -285,7 +323,14 @@ export class Zen extends EventTarget {
       const stored = localStorage.getItem(ZEN_STORAGE_KEY);
       if (stored && this.#getTheme(stored)) return stored;
     }
-    return this.#manifest.default ?? this.#manifest.themes[0]?.id ?? null;
+    // No explicit preference — check OS color scheme
+    const defaultId = this.#manifest.default ?? this.#manifest.themes[0]?.id ?? null;
+    if (this.#options.systemColorScheme && defaultId) {
+      const defaultTheme = this.#getTheme(defaultId);
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (prefersDark && defaultTheme?.darkVariant) return defaultTheme.darkVariant;
+    }
+    return defaultId;
   }
 
   #persist(themeId) {

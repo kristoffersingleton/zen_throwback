@@ -260,3 +260,26 @@
     to   { opacity: 1; }
   }
 }
+
+/**
+ * Automatic dark mode — CSS-only, no JS required.
+ *
+ * When the OS/browser is set to dark mode AND no explicit zen theme has been
+ * applied (i.e. [data-zen-theme] is not set), these token overrides fire.
+ * Because this is in @layer base, any explicit theme in @layer zen.theme
+ * wins cleanly — the auto-dark never conflicts with a chosen theme.
+ *
+ * Site authors get dark mode for free just by building against --zen-* tokens.
+ */
+@layer base {
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-zen-theme]) {
+      --zen-color-bg:      #111111;
+      --zen-color-surface: #1e1e1e;
+      --zen-color-text:    #e8e8e8;
+      --zen-color-muted:   #999999;
+      --zen-color-accent:  #4da6ff;
+      --zen-color-border:  #333333;
+    }
+  }
+}
