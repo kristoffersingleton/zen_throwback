@@ -9,11 +9,15 @@ Drop in two lines of HTML, build against CSS custom properties, and visitors can
 
 ---
 
-## Quick demo
+## Live demo
+
+**[kristoffersingleton.github.io/zen_throwback](https://kristoffersingleton.github.io/zen_throwback/)**
+
+Or run it locally:
 
 ```bash
 npm run dev
-# open http://localhost:3900/demo/
+# open http://localhost:3900/
 ```
 
 Click any theme in the floating panel (bottom-right), or try the **Generative** theme and type any word as a seed — the same seed always produces the same result.
@@ -347,7 +351,8 @@ zen_throwback/
 │   └── generative/       # Tier 4 — PRNG palette + type + layout
 │       └── generator.js
 ├── demo/
-│   └── index.html        # Live demo (run with `npm run dev`)
+│   └── index.html        # Local dev demo (absolute paths, for `npm run dev`)
+├── index.html            # GitHub Pages demo (relative paths)
 ├── SPEC.md               # Full protocol specification
 └── package.json
 ```
