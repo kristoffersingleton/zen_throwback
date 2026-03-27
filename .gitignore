@@ -18,3 +18,8 @@ npm-debug.log*
 # Build output (none yet, but reserved)
 dist/
 build/
+
+# Playwright
+playwright-report/
+test-results/
+tests/plan.md

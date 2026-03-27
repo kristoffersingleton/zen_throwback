@@ -4,9 +4,32 @@
   "description": "Dynamic presentation-layer engine — CSS Zen Garden evolved",
   "type": "module",
   "scripts": {
-    "dev": "npx --yes serve . --listen 3900 --no-clipboard",
-    "lint": "npx --yes eslint src/"
+    "dev":         "npx serve . --listen 3900 --no-clipboard",
+    "test":        "playwright test",
+    "test:ui":     "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:debug":  "playwright test --debug",
+    "test:report": "playwright show-report",
+    "lint":        "npx --yes eslint src/"
   },
-  "keywords": ["css", "theming", "design-tokens", "presentation-layer", "css-zen-garden"],
-  "license": "MIT"
+  "keywords": [
+    "css", "theming", "css-variables", "design-tokens", "web-components",
+    "css-layers", "vanilla-js", "zero-dependencies", "progressive-enhancement",
+    "frontend", "generative", "css-zen-garden", "runtime-theming", "dark-mode"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kristoffersingleton/zen_throwback.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/kristoffersingleton/zen_throwback/issues"
+  },
+  "homepage": "https://github.com/kristoffersingleton/zen_throwback#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "serve": "^14.2.6"
+  }
 }

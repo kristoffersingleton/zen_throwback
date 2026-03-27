@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zen CSS-only Fixture</title>
+  <!-- tokens.css ONLY — no engine, no data-zen-theme, so prefers-color-scheme selectors fire -->
+  <link rel="stylesheet" href="/themes/tokens.css">
+</head>
+<body>
+  <!-- Probe element: background and color driven entirely by CSS custom properties -->
+  <div id="probe" style="
+    background: var(--zen-color-bg);
+    color: var(--zen-color-text);
+    width: 100px;
+    height: 100px;
+  "></div>
+</body>
+</html>

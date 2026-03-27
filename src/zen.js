@@ -60,7 +60,11 @@ export class Zen extends EventTarget {
     this.#ensureLayer();
 
     const initial = this.#resolveInitialTheme();
-    if (initial) await this.apply(initial, { silent: false });
+    // Use _systemDriven so the initial apply does not write to localStorage or
+    // the URL param — the URL already reflects any param-driven choice, and
+    // writing storage here would prevent #watchColorScheme from responding to
+    // OS changes (it guards against overwriting an explicit user preference).
+    if (initial) await this.apply(initial, { silent: false, _systemDriven: true });
 
     if (this.#options.systemColorScheme) this.#watchColorScheme();
 
@@ -174,7 +178,10 @@ export class Zen extends EventTarget {
     if (!this.#tokenEl) {
       this.#tokenEl = document.createElement('style');
       this.#tokenEl.id = 'zen-tokens';
-      document.head.prepend(this.#tokenEl); // prepend so @layer overrides win
+      // Insert immediately after #zen-layer-order so the layer declaration
+      // remains the very first style element (required for correct cascade order).
+      const anchor = document.querySelector('#zen-layer-order');
+      anchor ? anchor.after(this.#tokenEl) : document.head.prepend(this.#tokenEl);
     }
     const props = Object.entries(tokens)
       .map(([k, v]) => `  ${k.startsWith('--') ? k : '--zen-' + k}: ${v};`)

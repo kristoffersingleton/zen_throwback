@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zen Test Fixture</title>
+
+  <!-- Discovery protocol — tested in 01-init.spec.js -->
+  <link rel="zen-manifest" href="/themes/manifest.json">
+  <meta name="zen:tokens" content="v1">
+
+  <link rel="stylesheet" href="/themes/tokens.css">
+</head>
+<body>
+  <!-- Probe elements that consume zen tokens — used to verify CSS custom property application -->
+  <h1 id="heading">Test Heading</h1>
+  <p id="para">Test paragraph text.</p>
+  <a id="link" href="#">Test link</a>
+  <code id="code">inline code</code>
+  <blockquote id="bq">A blockquote.</blockquote>
+  <div id="swatch"></div>
+
+  <!-- Inline switcher for 08-switcher.spec.js -->
+  <zen-switcher id="switcher" position="inline"></zen-switcher>
+
+  <script type="module">
+    import Zen from '/src/zen.js';
+    import '/src/zen-switcher.js';
+
+    const zen = new Zen({
+      // View Transitions disabled so tests don't race against animations
+      transitions: false,
+    });
+
+    // Expose BEFORE init() so the zen:ready handler in <zen-switcher> finds
+    // window.zen set when it tries to populate itself.
+    window.zen = zen;
+
+    // Track events on window for test assertions
+    window.__zenEvents = [];
+    const record = (type) => (e) => window.__zenEvents.push({ type, detail: e.detail });
+
+    // Register BEFORE init() so zen:ready is captured
+    zen.addEventListener('zen:ready',  record('zen:ready'));
+    zen.addEventListener('zen:change', record('zen:change'));
+
+    // Mirror events onto data attributes so Playwright can waitForAttribute
+    zen.addEventListener('zen:ready',  () => {
+      document.documentElement.dataset.testReady = 'true';
+    });
+    zen.addEventListener('zen:change', (e) => {
+      document.documentElement.dataset.testLastTheme = e.detail.theme.id;
+    });
+
+    await zen.init();
+  </script>
+</body>
+</html>
